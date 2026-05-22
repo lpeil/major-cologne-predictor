@@ -31,9 +31,11 @@ class MajorPredictor:
         """
         data = self.teams[team]
 
-        # Ranking score (inverted - lower rank number is better)
-        # Rank 1 = 100, Rank 40 = 10
-        rank_score = max(10, 100 - (data['hltv_rank'] * 2.25))
+        # Ranking score (inverted - lower rank number is better). When both
+        # HLTV and Valve ranks are present, blend current form and invite rank.
+        hltv_score = max(10, 100 - (data['hltv_rank'] * 1.15))
+        valve_score = max(10, 100 - (data.get('valve_rank', data['hltv_rank']) * 1.15))
+        rank_score = (hltv_score * 0.60) + (valve_score * 0.40)
 
         # Form score (already 0-10, scale to 0-100)
         form_score = data['form_score'] * 10

@@ -6,7 +6,7 @@ roster updates, or model tuning live here. Prediction code should import from
 this file instead of hardcoding event-specific data.
 
 Source snapshot:
-- HLTV IEM Cologne Major 2026 event hub, checked on 2026-05-22.
+- HLTV IEM Cologne Major 2026 Stage 1 overview, checked on 2026-05-22.
 """
 
 EVENT = {
@@ -78,14 +78,25 @@ STAGES = {
         "complete": True,
         "record_key": "stage_entry_record",
         "record_label": "Entry",
-        "rank_label": "VRS seed proxy",
+        "rank_label": "HLTV/VRS",
         "qualified_from": None,
         "qualifier_slots_to_next_stage": 8,
+        "round_1_matchups": [
+            ("GamerLegion", "NRG"),
+            ("B8", "TYLOO"),
+            ("HEROIC", "Sharks"),
+            ("BetBoom", "Gaimin Gladiators"),
+            ("BIG", "Liquid"),
+            ("M80", "Lynn Vision"),
+            ("MIBR", "THUNDER dOWNUNDER"),
+            ("SINNERS", "FlyQuest"),
+        ],
         "teams": {
             "GamerLegion": {
                 "source": "Stage 1 invite",
-                "event_seed": 17,
-                "hltv_rank": 17,
+                "event_seed": 12,
+                "hltv_rank": 11,
+                "valve_rank": 12,
                 "stage_entry_record": "N/A",
                 "momentum": "good",
                 "form_score": 7.2,
@@ -96,8 +107,9 @@ STAGES = {
             },
             "BIG": {
                 "source": "Stage 1 invite",
-                "event_seed": 18,
-                "hltv_rank": 18,
+                "event_seed": 26,
+                "hltv_rank": 32,
+                "valve_rank": 26,
                 "stage_entry_record": "N/A",
                 "momentum": "good",
                 "form_score": 7.0,
@@ -108,8 +120,9 @@ STAGES = {
             },
             "BetBoom": {
                 "source": "Stage 1 invite",
-                "event_seed": 19,
-                "hltv_rank": 19,
+                "event_seed": 18,
+                "hltv_rank": 17,
+                "valve_rank": 18,
                 "stage_entry_record": "N/A",
                 "momentum": "good",
                 "form_score": 6.9,
@@ -120,8 +133,9 @@ STAGES = {
             },
             "B8": {
                 "source": "Stage 1 invite",
-                "event_seed": 20,
-                "hltv_rank": 20,
+                "event_seed": 16,
+                "hltv_rank": 16,
+                "valve_rank": 16,
                 "stage_entry_record": "N/A",
                 "momentum": "good",
                 "form_score": 6.8,
@@ -132,8 +146,9 @@ STAGES = {
             },
             "HEROIC": {
                 "source": "Stage 1 invite",
-                "event_seed": 21,
-                "hltv_rank": 21,
+                "event_seed": 23,
+                "hltv_rank": 23,
+                "valve_rank": 23,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.6,
@@ -144,8 +159,9 @@ STAGES = {
             },
             "SINNERS": {
                 "source": "Stage 1 invite",
-                "event_seed": 22,
-                "hltv_rank": 22,
+                "event_seed": 28,
+                "hltv_rank": 27,
+                "valve_rank": 28,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.5,
@@ -156,8 +172,9 @@ STAGES = {
             },
             "M80": {
                 "source": "Stage 1 invite",
-                "event_seed": 23,
-                "hltv_rank": 23,
+                "event_seed": 29,
+                "hltv_rank": 24,
+                "valve_rank": 29,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.4,
@@ -168,8 +185,9 @@ STAGES = {
             },
             "NRG": {
                 "source": "Stage 1 invite",
-                "event_seed": 24,
-                "hltv_rank": 24,
+                "event_seed": 43,
+                "hltv_rank": 34,
+                "valve_rank": 43,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.3,
@@ -180,8 +198,9 @@ STAGES = {
             },
             "Sharks": {
                 "source": "Stage 1 invite",
-                "event_seed": 25,
-                "hltv_rank": 25,
+                "event_seed": 38,
+                "hltv_rank": 51,
+                "valve_rank": 38,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.2,
@@ -192,8 +211,9 @@ STAGES = {
             },
             "Gaimin Gladiators": {
                 "source": "Stage 1 invite",
-                "event_seed": 26,
-                "hltv_rank": 26,
+                "event_seed": 51,
+                "hltv_rank": 46,
+                "valve_rank": 51,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.1,
@@ -204,8 +224,9 @@ STAGES = {
             },
             "MIBR": {
                 "source": "Stage 1 invite",
-                "event_seed": 27,
-                "hltv_rank": 27,
+                "event_seed": 19,
+                "hltv_rank": 29,
+                "valve_rank": 19,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.0,
@@ -216,8 +237,9 @@ STAGES = {
             },
             "Liquid": {
                 "source": "Stage 1 invite",
-                "event_seed": 28,
-                "hltv_rank": 28,
+                "event_seed": 36,
+                "hltv_rank": 25,
+                "valve_rank": 36,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 6.0,
@@ -228,8 +250,9 @@ STAGES = {
             },
             "TYLOO": {
                 "source": "Stage 1 invite",
-                "event_seed": 29,
-                "hltv_rank": 29,
+                "event_seed": 27,
+                "hltv_rank": 31,
+                "valve_rank": 27,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 5.9,
@@ -240,8 +263,9 @@ STAGES = {
             },
             "Lynn Vision": {
                 "source": "Stage 1 invite",
-                "event_seed": 30,
-                "hltv_rank": 30,
+                "event_seed": 25,
+                "hltv_rank": 45,
+                "valve_rank": 25,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 5.8,
@@ -252,8 +276,9 @@ STAGES = {
             },
             "THUNDER dOWNUNDER": {
                 "source": "Stage 1 invite",
-                "event_seed": 31,
-                "hltv_rank": 31,
+                "event_seed": 56,
+                "hltv_rank": 80,
+                "valve_rank": 56,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 5.7,
@@ -264,8 +289,9 @@ STAGES = {
             },
             "FlyQuest": {
                 "source": "Stage 1 invite",
-                "event_seed": 32,
-                "hltv_rank": 32,
+                "event_seed": 74,
+                "hltv_rank": 58,
+                "valve_rank": 74,
                 "stage_entry_record": "N/A",
                 "momentum": "moderate",
                 "form_score": 5.7,

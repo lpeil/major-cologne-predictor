@@ -24,14 +24,14 @@ def print_team_strengths(predictor: MajorPredictor):
 
     record_key = STAGE["record_key"]
     record_label = STAGE["record_label"]
-    rank_label = STAGE["rank_label"]
-    print(f"{'Rank':<6} {'Team':<20} {'Strength':<12} {rank_label:<16} {record_label:<12} {'Momentum':<15}")
+    print(f"{'Rank':<6} {'Team':<20} {'Strength':<12} {'HLTV':<8} {'VRS':<8} {record_label:<12} {'Momentum':<15}")
     print("-" * 80)
 
     for i, (team, strength) in enumerate(rankings, 1):
         data = TEAMS_DATA[team]
         print(f"{i:<6} {team:<20} {strength:<12.2f} "
-              f"#{data['hltv_rank']:<15} {data[record_key]:<12} {data['momentum']:<15}")
+              f"#{data['hltv_rank']:<7} #{data.get('valve_rank', data['hltv_rank']):<7} "
+              f"{data[record_key]:<12} {data['momentum']:<15}")
 
 
 def print_simulation_results(results: dict, top_n: int = 8):
@@ -69,7 +69,7 @@ def print_pickem_recommendations(predictor: MajorPredictor, results: dict):
         data = TEAMS_DATA[team]
         confidence = "HIGH" if prob > 15 else "MEDIUM" if prob > 10 else "LOW"
         print(f"\n{i}. {team} - {prob:.2f}% probability [{confidence} CONFIDENCE]")
-        print(f"   Rank proxy: #{data['hltv_rank']} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
+        print(f"   HLTV: #{data['hltv_rank']} | VRS: #{data.get('valve_rank', data['hltv_rank'])} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
         print(f"   Players: {', '.join(data['players'])}")
         print(f"   Rationale: {data['notes']}")
 
@@ -80,7 +80,7 @@ def print_pickem_recommendations(predictor: MajorPredictor, results: dict):
         data = TEAMS_DATA[team]
         confidence = "HIGH" if prob > 15 else "MEDIUM" if prob > 10 else "LOW"
         print(f"\n{i}. {team} - {prob:.2f}% probability [{confidence} CONFIDENCE]")
-        print(f"   Rank proxy: #{data['hltv_rank']} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
+        print(f"   HLTV: #{data['hltv_rank']} | VRS: #{data.get('valve_rank', data['hltv_rank'])} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
         print(f"   Players: {', '.join(data['players'])}")
         print(f"   Rationale: {data['notes']}")
 
@@ -153,7 +153,7 @@ def print_recommended_picks(predictor: MajorPredictor, results: dict):
 def main():
     """Main execution function"""
     print_header(f"{EVENT['name'].upper()} - {STAGE['name'].upper()} PREDICTOR")
-    print("Data-driven Pick'em analysis using VRS seed proxy, form, and simulations")
+    print("Data-driven Pick'em analysis using HLTV rank, VRS rank, form, and simulations")
     print("Based on 16-team Swiss system format\n")
 
     # Initialize predictor
@@ -165,7 +165,7 @@ def main():
 
     # Run simulations
     print("\nRunning 10,000 Monte Carlo simulations of Swiss bracket...")
-    print("Using seeded Round 1 matchups from the current stage data")
+    print("Using Round 1 matchups from the current stage data")
     print("(This may take a moment...)\n")
 
     results = predictor.simulate_swiss_stage(simulations=10000, first_round_matchups=ROUND_1_MATCHUPS)
