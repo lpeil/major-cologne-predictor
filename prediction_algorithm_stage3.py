@@ -1,30 +1,34 @@
 """
-Prediction algorithm for Major Budapest 2025 Stage 3 (Legends Stage)
-Uses multiple weighted factors to predict Swiss system outcomes
+Prediction algorithm for Cologne 2026 Stage 3 invite data.
+Uses weighted factors configured in tournament_data.py.
 """
 
 import random
 from typing import Dict, List, Tuple
-from team_data_stage3 import TEAMS_DATA_STAGE3, ALL_TEAMS_STAGE3, INITIAL_SEEDING_STAGE3
+from team_data_stage3 import (
+    TEAMS_DATA_STAGE3,
+    ALL_TEAMS_STAGE3,
+    INITIAL_SEEDING_STAGE3,
+    STAGE3,
+    WEIGHTS_STAGE3,
+)
+from tournament_data import MOMENTUM_STAGE_SCORE, RECORD_SCORE, UPSET_MULTIPLIERS
 
 
 class Stage3Predictor:
     """
-    Predicts outcomes for Major Stage 3 using weighted factors:
-    - HLTV ranking (35%)
-    - Recent form/momentum (30%)
-    - Stage 2 performance (20%)
-    - Consistency score (15%)
+    Predicts outcomes for the configured Stage 3 data using weighted factors:
+    - VRS/ranking proxy
+    - Recent form/momentum
+    - Stage entry performance/status
+    - Consistency score
     """
 
     def __init__(self):
         self.teams = TEAMS_DATA_STAGE3
-        self.weights = {
-            'rank': 0.35,
-            'form': 0.30,
-            'stage2': 0.20,
-            'consistency': 0.15
-        }
+        self.stage = STAGE3
+        self.record_key = STAGE3["record_key"]
+        self.weights = WEIGHTS_STAGE3
 
     def calculate_team_strength(self, team: str) -> float:
         """
@@ -33,32 +37,20 @@ class Stage3Predictor:
         """
         data = self.teams[team]
 
-        # Ranking score (inverted - lower rank number is better)
-        # Rank 1 = 100, Rank 40 = 10
-        rank_score = max(10, 100 - (data['hltv_rank'] * 2.25))
+        # Ranking score (inverted - lower rank number is better). When both
+        # HLTV and Valve ranks are present, blend current form and invite rank.
+        hltv_score = max(10, 100 - (data['hltv_rank'] * 1.15))
+        valve_score = max(10, 100 - (data.get('valve_rank', data['hltv_rank']) * 1.15))
+        rank_score = (hltv_score * 0.60) + (valve_score * 0.40)
 
         # Form score (already 0-10, scale to 0-100)
         form_score = data['form_score'] * 10
 
-        # Stage 2 performance score (or Legend status)
-        if data['stage2_record'] == '3-0':
-            stage2_score = 100
-        elif data['stage2_record'] == '3-1':
-            stage2_score = 80
-        elif data['stage2_record'] == '3-2':
-            stage2_score = 60
-        else:  # Legends (direct invites)
-            # Base on momentum
-            if data['momentum'] == 'excellent':
-                stage2_score = 95
-            elif data['momentum'] == 'very good':
-                stage2_score = 85
-            elif data['momentum'] == 'good':
-                stage2_score = 75
-            elif data['momentum'] == 'moderate':
-                stage2_score = 60
-            else:
-                stage2_score = 50
+        # Stage entry performance/status score
+        record = data[self.record_key]
+        stage_entry_score = RECORD_SCORE.get(record)
+        if stage_entry_score is None:
+            stage_entry_score = MOMENTUM_STAGE_SCORE[data['momentum']]
 
         # Consistency score (0-10, scale to 0-100)
         consistency_score = data['consistency'] * 10
@@ -67,7 +59,7 @@ class Stage3Predictor:
         total_score = (
             rank_score * self.weights['rank'] +
             form_score * self.weights['form'] +
-            stage2_score * self.weights['stage2'] +
+            stage_entry_score * self.weights['stage_entry'] +
             consistency_score * self.weights['consistency']
         )
 
@@ -103,12 +95,7 @@ class Stage3Predictor:
 
         # Add small randomness for upset potential
         upset_factor = self.teams[team2]['upset_potential']
-        if upset_factor == 'very high':
-            prob1 *= 0.90
-        elif upset_factor == 'high':
-            prob1 *= 0.93
-        elif upset_factor == 'medium':
-            prob1 *= 0.97
+        prob1 *= UPSET_MULTIPLIERS[upset_factor]
 
         if prob1 > 0.5:
             return (team1, prob1)
@@ -141,6 +128,9 @@ class Stage3Predictor:
                 else:
                     # Pair teams with similar records (Swiss system)
                     matchups = self._create_swiss_pairings(records, active_teams)
+
+                if not matchups:
+                    raise RuntimeError("Swiss pairing produced no matchups for active teams")
 
                 # Simulate each matchup
                 for team1, team2 in matchups:
@@ -194,6 +184,7 @@ class Stage3Predictor:
             by_record[record].append(team)
 
         matchups = []
+        leftovers = []
         for record_group in by_record.values():
             # Sort teams by initial seeding (maintain seeding order)
             record_group.sort(key=lambda team: INITIAL_SEEDING_STAGE3.index(team))
@@ -202,6 +193,16 @@ class Stage3Predictor:
             n = len(record_group)
             for i in range(n // 2):
                 matchups.append((record_group[i], record_group[n - 1 - i]))
+
+            if len(record_group) % 2 == 1:
+                leftovers.append(record_group[n // 2])
+
+        leftovers.sort(key=lambda team: (
+            records[team]['wins'] - records[team]['losses'],
+            -INITIAL_SEEDING_STAGE3.index(team),
+        ), reverse=True)
+        for i in range(0, len(leftovers) - 1, 2):
+            matchups.append((leftovers[i], leftovers[i + 1]))
 
         return matchups
 

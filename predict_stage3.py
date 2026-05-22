@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Main prediction script for Budapest Major 2025 Stage 3 (Legends Stage)
+Main prediction script for IEM Cologne Major 2026 Stage 3 invite data
 Generates Pick'em recommendations based on simulations and analysis
 Based on 16-team Swiss system format
 """
 
 import sys
 from prediction_algorithm_stage3 import Stage3Predictor
-from team_data_stage3 import TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
+from team_data_stage3 import EVENT, STAGE3, TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
 
 
 def print_header(text: str):
@@ -143,14 +143,14 @@ def print_recommended_picks(predictor: Stage3Predictor, results: dict):
     print("   * CS2 has high variance - upsets are common in Swiss format")
     print("   * Consider your own research and recent team news")
     print("   * The 3-0 and 0-3 picks are high-risk, high-reward choices")
-    print("   * Stage 3 runs December 4-7, 2025")
+    print(f"   * {STAGE3['name']} runs {STAGE3['date_range']}")
     print("   * Top 8 teams advance to Playoffs (Champions Stage)")
     print("\nTOTAL PICKS: 2x (3-0) + 2x (0-3) + 6x (Advance) = 10 teams")
 
 
 def print_round1_matchups():
     """Display Round 1 matchups"""
-    print_header("ROUND 1 MATCHUPS (December 4, 2025)")
+    print_header(f"ROUND 1 MATCHUPS ({STAGE3['date_range']})")
 
     print("All matches are Best-of-1 (BO1)\n")
 
@@ -159,15 +159,15 @@ def print_round1_matchups():
         data2 = TEAMS_DATA_STAGE3[team2]
         print(f"Match {i}: {team1:<15} (#{data1['hltv_rank']:<2}) vs {team2:<15} (#{data2['hltv_rank']:<2})")
 
-    print("\nLegends (top 8 seeds) face Stage 2 qualifiers (seeds 9-16)")
+    print("\nOnly direct Stage 3 invites are currently present in the data file.")
 
 
 def main():
     """Main execution function"""
-    print_header("BUDAPEST MAJOR 2025 - STAGE 3 PREDICTOR (LEGENDS STAGE)")
-    print("Data-driven Pick'em analysis using HLTV rankings, form, and simulations")
-    print("Based on 16-team Swiss system format")
-    print("8 Legends + 8 Stage 2 qualifiers = 16 teams\n")
+    print_header(f"{EVENT['name'].upper()} - {STAGE3['name'].upper()} PREDICTOR")
+    print("Data-driven Pick'em analysis using VRS seed proxy, form, and simulations")
+    print("Stage 3 is not complete until eight Stage 2 qualifiers are known.")
+    print("Current data contains only the eight direct Stage 3 invites.\n")
 
     # Initialize predictor
     print("Initializing predictor...")
@@ -181,7 +181,7 @@ def main():
 
     # Run simulations
     print("\nRunning 10,000 Monte Carlo simulations of Swiss bracket...")
-    print("Using REAL Round 1 matchups from Liquipedia (December 4, 2025)")
+    print("Using seeded Round 1 matchups for currently known Stage 3 invites")
     print("(This may take a moment...)\n")
 
     results = predictor.simulate_swiss_stage(simulations=10000, first_round_matchups=ROUND_1_MATCHUPS_STAGE3)

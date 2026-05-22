@@ -4,7 +4,7 @@ Generate HTML page for Stage 3 predictions
 """
 
 from prediction_algorithm_stage3 import Stage3Predictor
-from team_data_stage3 import TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
+from team_data_stage3 import EVENT, STAGE3, TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
 
 def generate_html():
     # Run predictions
@@ -25,7 +25,7 @@ def generate_html():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budapest Major 2025 - Stage 3 Predictor</title>
+    <title>""" + EVENT["name"] + " - " + STAGE3["name"] + """ Predictor</title>
     <style>
         * {
             margin: 0;
@@ -241,9 +241,9 @@ def generate_html():
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Budapest Major 2025</h1>
-        <div class="subtitle">Stage 3 (Legends Stage) - Predictor</div>
-        <div class="date-badge">📅 December 4-7, 2025 | 16 Teams Swiss System</div>
+        <h1>🎮 """ + EVENT["name"] + """</h1>
+        <div class="subtitle">""" + STAGE3["name"] + """ - Predictor</div>
+        <div class="date-badge">📅 """ + STAGE3["date_range"] + """ | Current known teams</div>
 
         <!-- Round 1 Matchups -->
         <div class="section">
@@ -400,8 +400,8 @@ def generate_html():
         </div>
 
         <div class="footer">
-            <p>Generated on December 3, 2025</p>
-            <p>Data sources: HLTV.org, Liquipedia</p>
+            <p>Generated from centralized tournament_data.py</p>
+            <p>Data source: """ + EVENT["source_url"] + """</p>
             <p>Good luck with your Pick'ems! 🎮</p>
         </div>
     </div>
