@@ -4,12 +4,17 @@ Generate HTML page for Stage 3 predictions
 """
 
 from prediction_algorithm_stage3 import Stage3Predictor
+from model_config import DEFAULT_RANDOM_SEED, DEFAULT_SIMULATIONS
 from team_data_stage3 import EVENT, STAGE3, TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
 
 def generate_html():
     # Run predictions
     predictor = Stage3Predictor()
-    results = predictor.simulate_swiss_stage(simulations=10000, first_round_matchups=ROUND_1_MATCHUPS_STAGE3)
+    results = predictor.simulate_swiss_stage(
+        simulations=DEFAULT_SIMULATIONS,
+        first_round_matchups=ROUND_1_MATCHUPS_STAGE3,
+        seed=DEFAULT_RANDOM_SEED,
+    )
     predictions = predictor.get_top_predictions(results)
     rankings = predictor.get_strength_rankings()
 
@@ -325,7 +330,7 @@ def generate_html():
 
         <!-- Simulation Results -->
         <div class="section">
-            <h2>📊 Simulation Results (10,000 iterations)</h2>
+            <h2>📊 Simulation Results (""" + f"{DEFAULT_SIMULATIONS:,}" + """ iterations)</h2>
             <table>
                 <thead>
                     <tr>
@@ -391,7 +396,7 @@ def generate_html():
         <div class="warning-box">
             <strong>⚠️ Important Notes:</strong>
             <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>Predictions based on statistical analysis and 10,000 Monte Carlo simulations</li>
+                <li>Predictions based on statistical analysis and """ + f"{DEFAULT_SIMULATIONS:,}" + """ Monte Carlo simulations</li>
                 <li>CS2 has high variance - upsets are common in Swiss format</li>
                 <li>3-0 and 0-3 picks are high-risk, high-reward choices</li>
                 <li>Consider recent team news and your own research</li>

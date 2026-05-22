@@ -4,7 +4,7 @@ Uses weighted factors configured in tournament_data.py.
 """
 
 import random
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 from team_data_stage3 import (
     TEAMS_DATA_STAGE3,
     ALL_TEAMS_STAGE3,
@@ -12,7 +12,14 @@ from team_data_stage3 import (
     STAGE3,
     WEIGHTS_STAGE3,
 )
-from tournament_data import MOMENTUM_STAGE_SCORE, RECORD_SCORE, UPSET_MULTIPLIERS
+from model_config import (
+    DEFAULT_RANDOM_SEED,
+    DEFAULT_SIMULATIONS,
+    MOMENTUM_STAGE_SCORE,
+    RANK_BLEND,
+    RECORD_SCORE,
+    UPSET_MULTIPLIERS,
+)
 
 
 class Stage3Predictor:
@@ -41,7 +48,7 @@ class Stage3Predictor:
         # HLTV and Valve ranks are present, blend current form and invite rank.
         hltv_score = max(10, 100 - (data['hltv_rank'] * 1.15))
         valve_score = max(10, 100 - (data.get('valve_rank', data['hltv_rank']) * 1.15))
-        rank_score = (hltv_score * 0.60) + (valve_score * 0.40)
+        rank_score = (hltv_score * RANK_BLEND["hltv"]) + (valve_score * RANK_BLEND["valve"])
 
         # Form score (already 0-10, scale to 0-100)
         form_score = data['form_score'] * 10
@@ -102,7 +109,12 @@ class Stage3Predictor:
         else:
             return (team2, 1 - prob1)
 
-    def simulate_swiss_stage(self, simulations: int = 10000, first_round_matchups=None) -> Dict[str, Dict[str, float]]:
+    def simulate_swiss_stage(
+        self,
+        simulations: int = DEFAULT_SIMULATIONS,
+        first_round_matchups=None,
+        seed: Optional[int] = DEFAULT_RANDOM_SEED,
+    ) -> Dict[str, Dict[str, float]]:
         """
         Simulate the Swiss system bracket multiple times
         Returns probability distribution for each team's final record
@@ -110,7 +122,9 @@ class Stage3Predictor:
         Args:
             simulations: Number of Monte Carlo simulations to run
             first_round_matchups: Optional list of (team1, team2) tuples for fixed round 1 matchups
+            seed: Optional random seed. Use None for non-deterministic simulations.
         """
+        rng = random.Random(seed)
         results = {team: {'3-0': 0, '3-1': 0, '3-2': 0, '2-3': 0, '1-3': 0, '0-3': 0}
                    for team in ALL_TEAMS_STAGE3}
 
@@ -137,7 +151,7 @@ class Stage3Predictor:
                     winner, prob = self.predict_matchup(team1, team2)
 
                     # Probabilistic outcome
-                    if random.random() < prob:
+                    if rng.random() < prob:
                         records[winner]['wins'] += 1
                         loser = team2 if winner == team1 else team1
                         records[loser]['losses'] += 1
@@ -185,7 +199,8 @@ class Stage3Predictor:
 
         matchups = []
         leftovers = []
-        for record_group in by_record.values():
+        for record in sorted(by_record):
+            record_group = by_record[record]
             # Sort teams by initial seeding (maintain seeding order)
             record_group.sort(key=lambda team: INITIAL_SEEDING_STAGE3.index(team))
 

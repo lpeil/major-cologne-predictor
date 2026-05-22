@@ -6,6 +6,7 @@ Based on 16-team Swiss system format
 """
 
 import sys
+from model_config import DEFAULT_RANDOM_SEED, DEFAULT_SIMULATIONS
 from prediction_algorithm_stage3 import Stage3Predictor
 from team_data_stage3 import EVENT, STAGE3, TEAMS_DATA_STAGE3, ROUND_1_MATCHUPS_STAGE3
 
@@ -33,9 +34,9 @@ def print_team_strengths(predictor: Stage3Predictor):
               f"#{data['hltv_rank']:<7} {source:<25} {data['momentum']:<15}")
 
 
-def print_simulation_results(results: dict, top_n: int = 8):
+def print_simulation_results(results: dict, simulations: int, top_n: int = 8):
     """Display simulation probability results"""
-    print_header("SIMULATION RESULTS (10,000 iterations)")
+    print_header(f"SIMULATION RESULTS ({simulations:,} iterations)")
 
     print(f"{'Team':<20} {'3-0':<10} {'3-1':<10} {'3-2':<10} {'2-3':<10} {'1-3':<10} {'0-3':<10}")
     print("-" * 90)
@@ -180,14 +181,19 @@ def main():
     print_team_strengths(predictor)
 
     # Run simulations
-    print("\nRunning 10,000 Monte Carlo simulations of Swiss bracket...")
+    print(f"\nRunning {DEFAULT_SIMULATIONS:,} Monte Carlo simulations of Swiss bracket...")
     print("Using seeded Round 1 matchups for currently known Stage 3 invites")
+    print(f"Using seed {DEFAULT_RANDOM_SEED}")
     print("(This may take a moment...)\n")
 
-    results = predictor.simulate_swiss_stage(simulations=10000, first_round_matchups=ROUND_1_MATCHUPS_STAGE3)
+    results = predictor.simulate_swiss_stage(
+        simulations=DEFAULT_SIMULATIONS,
+        first_round_matchups=ROUND_1_MATCHUPS_STAGE3,
+        seed=DEFAULT_RANDOM_SEED,
+    )
 
     # Display results
-    print_simulation_results(results)
+    print_simulation_results(results, DEFAULT_SIMULATIONS)
 
     # Show detailed recommendations
     print_pickem_recommendations(predictor, results)
