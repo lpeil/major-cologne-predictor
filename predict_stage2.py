@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Main prediction script for Budapest Major 2025 Stage 2
+Main prediction script for IEM Cologne Major 2026 default stage
 Generates Pick'em recommendations based on simulations and analysis
 """
 
 import sys
 from prediction_algorithm import MajorPredictor
-from team_data import TEAMS_DATA, ROUND_1_MATCHUPS
+from team_data import EVENT, STAGE, TEAMS_DATA, ROUND_1_MATCHUPS
 
 
 def print_header(text: str):
@@ -22,13 +22,16 @@ def print_team_strengths(predictor: MajorPredictor):
 
     rankings = predictor.get_strength_rankings()
 
-    print(f"{'Rank':<6} {'Team':<20} {'Strength':<12} {'HLTV':<8} {'Stage 1':<12} {'Momentum':<15}")
+    record_key = STAGE["record_key"]
+    record_label = STAGE["record_label"]
+    rank_label = STAGE["rank_label"]
+    print(f"{'Rank':<6} {'Team':<20} {'Strength':<12} {rank_label:<16} {record_label:<12} {'Momentum':<15}")
     print("-" * 80)
 
     for i, (team, strength) in enumerate(rankings, 1):
         data = TEAMS_DATA[team]
         print(f"{i:<6} {team:<20} {strength:<12.2f} "
-              f"#{data['hltv_rank']:<7} {data['stage1_record']:<12} {data['momentum']:<15}")
+              f"#{data['hltv_rank']:<15} {data[record_key]:<12} {data['momentum']:<15}")
 
 
 def print_simulation_results(results: dict, top_n: int = 8):
@@ -66,7 +69,8 @@ def print_pickem_recommendations(predictor: MajorPredictor, results: dict):
         data = TEAMS_DATA[team]
         confidence = "HIGH" if prob > 15 else "MEDIUM" if prob > 10 else "LOW"
         print(f"\n{i}. {team} - {prob:.2f}% probability [{confidence} CONFIDENCE]")
-        print(f"   Rank: #{data['hltv_rank']} | Stage 1: {data['stage1_record']} | Momentum: {data['momentum']}")
+        print(f"   Rank proxy: #{data['hltv_rank']} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
+        print(f"   Players: {', '.join(data['players'])}")
         print(f"   Rationale: {data['notes']}")
 
     # 0-3 Predictions
@@ -76,7 +80,8 @@ def print_pickem_recommendations(predictor: MajorPredictor, results: dict):
         data = TEAMS_DATA[team]
         confidence = "HIGH" if prob > 15 else "MEDIUM" if prob > 10 else "LOW"
         print(f"\n{i}. {team} - {prob:.2f}% probability [{confidence} CONFIDENCE]")
-        print(f"   Rank: #{data['hltv_rank']} | Stage 1: {data['stage1_record']} | Momentum: {data['momentum']}")
+        print(f"   Rank proxy: #{data['hltv_rank']} | {STAGE['record_label']}: {data[STAGE['record_key']]} | Momentum: {data['momentum']}")
+        print(f"   Players: {', '.join(data['players'])}")
         print(f"   Rationale: {data['notes']}")
 
     # 3-1 and 3-2 (Advancing teams)
@@ -141,14 +146,14 @@ def print_recommended_picks(predictor: MajorPredictor, results: dict):
     print("   • CS2 has high variance - upsets are common in Swiss format")
     print("   • Consider your own research and recent team news")
     print("   • The 3-0 and 0-3 picks are high-risk, high-reward choices")
-    print("   • Stage 2 runs November 29 - December 2, 2025")
+    print(f"   • {STAGE['name']} runs {STAGE['date_range']}")
     print("\n📊 TOTAL PICKS: 2x (3-0) + 2x (0-3) + 6x (Advance) = 10 teams")
 
 
 def main():
     """Main execution function"""
-    print_header("BUDAPEST MAJOR 2025 - STAGE 2 PREDICTOR")
-    print("Data-driven Pick'em analysis using HLTV rankings, form, and simulations")
+    print_header(f"{EVENT['name'].upper()} - {STAGE['name'].upper()} PREDICTOR")
+    print("Data-driven Pick'em analysis using VRS seed proxy, form, and simulations")
     print("Based on 16-team Swiss system format\n")
 
     # Initialize predictor
@@ -160,7 +165,7 @@ def main():
 
     # Run simulations
     print("\nRunning 10,000 Monte Carlo simulations of Swiss bracket...")
-    print("Using REAL Round 1 matchups from HLTV (November 29, 2025)")
+    print("Using seeded Round 1 matchups from the current stage data")
     print("(This may take a moment...)\n")
 
     results = predictor.simulate_swiss_stage(simulations=10000, first_round_matchups=ROUND_1_MATCHUPS)

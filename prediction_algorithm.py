@@ -1,30 +1,28 @@
 """
-Prediction algorithm for Major Budapest 2025 Stage 2
-Uses multiple weighted factors to predict team performance
+Prediction algorithm for the default Major Swiss stage.
+Uses weighted factors configured in tournament_data.py.
 """
 
 import random
 from typing import Dict, List, Tuple
-from team_data import TEAMS_DATA, ALL_TEAMS, INITIAL_SEEDING
+from team_data import TEAMS_DATA, ALL_TEAMS, INITIAL_SEEDING, STAGE, WEIGHTS
+from tournament_data import MOMENTUM_STAGE_SCORE, RECORD_SCORE, UPSET_MULTIPLIERS
 
 
 class MajorPredictor:
     """
-    Predicts outcomes for Major Stage 2 using weighted factors:
-    - HLTV ranking (30%)
-    - Recent form/momentum (30%)
-    - Stage 1 performance (25%)
-    - Consistency score (15%)
+    Predicts outcomes for the configured Major stage using weighted factors:
+    - VRS/ranking proxy
+    - Recent form/momentum
+    - Stage entry performance/status
+    - Consistency score
     """
 
     def __init__(self):
         self.teams = TEAMS_DATA
-        self.weights = {
-            'rank': 0.30,
-            'form': 0.30,
-            'stage1': 0.25,
-            'consistency': 0.15
-        }
+        self.stage = STAGE
+        self.record_key = STAGE["record_key"]
+        self.weights = WEIGHTS
 
     def calculate_team_strength(self, team: str) -> float:
         """
@@ -40,27 +38,11 @@ class MajorPredictor:
         # Form score (already 0-10, scale to 0-100)
         form_score = data['form_score'] * 10
 
-        # Stage 1 performance score
-        if data['stage1_record'] == '3-0':
-            stage1_score = 100
-        elif data['stage1_record'] == '3-1':
-            stage1_score = 80
-        elif data['stage1_record'] == '3-2':
-            stage1_score = 60
-        else:  # Direct invites
-            # Base on momentum
-            if data['momentum'] == 'excellent':
-                stage1_score = 85
-            elif data['momentum'] == 'very good':
-                stage1_score = 75
-            elif data['momentum'] == 'good':
-                stage1_score = 65
-            elif data['momentum'] == 'moderate':
-                stage1_score = 50
-            elif data['momentum'] == 'shaky':
-                stage1_score = 45
-            else:  # poor
-                stage1_score = 30
+        # Stage entry performance/status score
+        record = data[self.record_key]
+        stage_entry_score = RECORD_SCORE.get(record)
+        if stage_entry_score is None:
+            stage_entry_score = MOMENTUM_STAGE_SCORE[data['momentum']]
 
         # Consistency score (0-10, scale to 0-100)
         consistency_score = data['consistency'] * 10
@@ -69,7 +51,7 @@ class MajorPredictor:
         total_score = (
             rank_score * self.weights['rank'] +
             form_score * self.weights['form'] +
-            stage1_score * self.weights['stage1'] +
+            stage_entry_score * self.weights['stage_entry'] +
             consistency_score * self.weights['consistency']
         )
 
@@ -105,10 +87,7 @@ class MajorPredictor:
 
         # Add small randomness for upset potential
         upset_factor = self.teams[team2]['upset_potential']
-        if upset_factor == 'very high':
-            prob1 *= 0.90
-        elif upset_factor == 'high':
-            prob1 *= 0.95
+        prob1 *= UPSET_MULTIPLIERS[upset_factor]
 
         if prob1 > 0.5:
             return (team1, prob1)
@@ -141,6 +120,9 @@ class MajorPredictor:
                 else:
                     # Pair teams with similar records (Swiss system)
                     matchups = self._create_swiss_pairings(records, active_teams)
+
+                if not matchups:
+                    raise RuntimeError("Swiss pairing produced no matchups for active teams")
 
                 # Simulate each matchup
                 for team1, team2 in matchups:
@@ -198,6 +180,7 @@ class MajorPredictor:
             by_record[record].append(team)
 
         matchups = []
+        leftovers = []
         for record_group in by_record.values():
             # Sort teams by initial seeding (maintain seeding order)
             record_group.sort(key=lambda team: INITIAL_SEEDING.index(team))
@@ -207,10 +190,15 @@ class MajorPredictor:
             for i in range(n // 2):
                 matchups.append((record_group[i], record_group[n - 1 - i]))
 
-            # If odd number, pair with closest record group (simplified)
             if len(record_group) % 2 == 1:
-                # For simplicity, just pair with any available team
-                pass  # In real implementation, would find best pairing
+                leftovers.append(record_group[n // 2])
+
+        leftovers.sort(key=lambda team: (
+            records[team]['wins'] - records[team]['losses'],
+            -INITIAL_SEEDING.index(team),
+        ), reverse=True)
+        for i in range(0, len(leftovers) - 1, 2):
+            matchups.append((leftovers[i], leftovers[i + 1]))
 
         return matchups
 

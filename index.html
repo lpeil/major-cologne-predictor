@@ -3,1820 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budapest Major 2025 - Stage 2 Predictions | Data-Driven Analysis</title>
-    <meta name="description" content="Análise científica e predições baseadas em dados para o Stage 2 do Budapest Major 2025 usando 10.000 simulações Monte Carlo">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
+    <title>IEM Cologne Major 2026 - Stage 1 Predictions</title>
+    <meta name="description" content="Predicoes para o Stage 1 do IEM Cologne Major 2026 com 10.000 simulacoes Monte Carlo do formato Swiss.">
     <style>
+        :root {
+            --bg: #0d1117;
+            --panel: #151b23;
+            --panel-soft: #1d2632;
+            --line: #303947;
+            --text: #ecf2f8;
+            --muted: #9ba8b7;
+            --blue: #58a6ff;
+            --green: #4ade80;
+            --yellow: #facc15;
+            --red: #fb7185;
+            --cyan: #22d3ee;
+        }
+
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #FF4655;
-            --secondary: #FFA726;
-            --dark: #0A0E27;
-            --dark-lighter: #1A1F3A;
-            --accent: #00D9FF;
-            --success: #00E676;
-            --warning: #FFC107;
-            --danger: #FF1744;
-            --text: #E8E8E8;
-            --text-muted: #9E9E9E;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark);
+            margin: 0;
+            background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
         }
 
-        h1, h2, h3 {
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 50%, #2A1F3A 100%);
-            padding: 80px 20px 60px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
+        .topbar {
+            border-bottom: 1px solid var(--line);
+            background: rgba(13, 17, 23, 0.94);
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(255, 70, 85, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 217, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
+            z-index: 10;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
+        .nav {
+            max-width: 1180px;
             margin: 0 auto;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(255, 70, 85, 0.1);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #FF4655 0%, #FFA726 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            margin-top: 40px;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-        .hero-stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--accent);
-            display: block;
-        }
-
-        .hero-stat-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Section */
-        .section {
-            padding: 80px 20px;
-            position: relative;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-number {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            line-height: 40px;
-            text-align: center;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 15px;
-        }
-
-        .section-description {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Methodology Cards */
-        .methodology-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .method-card {
-            background: var(--dark-lighter);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .method-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(255, 70, 85, 0.2);
-        }
-
-        .method-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-
-        .method-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .method-title {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-
-        .method-weight {
-            display: inline-block;
-            background: rgba(255, 70, 85, 0.1);
-            color: var(--primary);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .method-description {
-            color: var(--text-muted);
-            line-height: 1.7;
-        }
-
-        /* Swiss System Explanation */
-        .swiss-explainer {
-            background: var(--dark-lighter);
-            border-radius: 20px;
-            padding: 50px;
-            margin: 40px 0;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        .swiss-title {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: var(--accent);
-            text-align: center;
-        }
-
-        .swiss-steps {
-            display: grid;
-            gap: 20px;
-        }
-
-        .swiss-step {
-            display: flex;
-            align-items: start;
-            gap: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
-            border-left: 3px solid var(--accent);
-        }
-
-        .swiss-step-number {
-            flex-shrink: 0;
-            width: 35px;
-            height: 35px;
-            background: var(--accent);
-            color: var(--dark);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .swiss-step-content h4 {
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .swiss-step-content p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Team Seeding */
-        .seeding-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin: 40px 0;
-        }
-
-        .seed-card {
-            background: var(--dark-lighter);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 20px 15px;
-            text-align: center;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .seed-card:hover {
-            transform: scale(1.05);
-            border-color: var(--primary);
-        }
-
-        .seed-number {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .seed-team {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-
-        /* Results Section */
-        .results-container {
-            display: grid;
-            gap: 40px;
-            margin-top: 40px;
-        }
-
-        .result-category {
-            background: var(--dark-lighter);
-            border-radius: 20px;
-            padding: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .result-category-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .result-icon {
-            font-size: 2.5rem;
-        }
-
-        .result-category-title {
-            font-size: 2rem;
-            flex: 1;
-        }
-
-        .result-category-subtitle {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Team Prediction Cards */
-        .predictions-list {
-            display: grid;
-            gap: 20px;
-        }
-
-        .prediction-card {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .prediction-card:hover {
-            transform: translateX(5px);
-            border-color: var(--primary);
-        }
-
-        .prediction-rank {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            min-width: 50px;
-        }
-
-        .prediction-team-info {
-            flex: 1;
-        }
-
-        .prediction-team-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .prediction-team-details {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .prediction-probability {
-            text-align: right;
-        }
-
-        .prediction-percentage {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-        }
-
-        .prediction-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .confidence-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 5px;
-        }
-
-        .confidence-high {
-            background: rgba(0, 230, 118, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
-        }
-
-        .confidence-medium {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning);
-            border: 1px solid var(--warning);
-        }
-
-        /* Probability Explanation */
-        .prob-explainer {
-            background: var(--dark-lighter);
-            border-radius: 20px;
-            padding: 50px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 167, 38, 0.2);
-        }
-
-        .prob-comparison {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .prob-card {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            padding: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .prob-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--secondary);
-        }
-
-        .prob-card-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .prob-card-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .prob-card-title {
-            font-size: 1.5rem;
-            color: var(--secondary);
-            margin-bottom: 10px;
-        }
-
-        .prob-card-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .prob-breakdown {
-            margin: 20px 0;
-        }
-
-        .prob-item {
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
+            gap: 16px;
             align-items: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 3px solid var(--primary);
         }
 
-        .prob-item-label {
-            font-weight: 600;
-        }
-
-        .prob-item-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .prob-total {
-            margin-top: 20px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(255, 70, 85, 0.1), rgba(255, 167, 38, 0.1));
-            border-radius: 12px;
-            border: 2px solid var(--secondary);
-            text-align: center;
-        }
-
-        .prob-total-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .prob-total-value {
-            font-size: 2.5rem;
+        .brand {
             font-weight: 800;
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: 0;
         }
 
-        .prob-formula {
-            background: rgba(0, 217, 255, 0.05);
-            border: 1px dashed var(--accent);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 30px 0;
-            text-align: center;
+        .nav span:last-child {
+            color: var(--muted);
+            font-size: 14px;
         }
 
-        .prob-formula-text {
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            color: var(--accent);
-            font-weight: 600;
+        main {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 36px 20px 56px;
         }
 
-        .insight-box {
-            background: linear-gradient(135deg, rgba(255, 167, 38, 0.1), rgba(255, 70, 85, 0.1));
-            border-left: 4px solid var(--secondary);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-
-        .insight-box-title {
-            font-size: 1.3rem;
-            color: var(--secondary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .insight-box-content {
-            color: var(--text);
-            line-height: 1.8;
-        }
-
-        .insight-grid {
+        .hero {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+            gap: 28px;
+            align-items: end;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .insight-item {
-            background: rgba(255, 255, 255, 0.02);
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(34px, 6vw, 68px);
+            line-height: 0.95;
+            letter-spacing: 0;
+        }
+
+        .lead {
+            color: var(--muted);
+            max-width: 720px;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .summary {
+            background: var(--panel);
+            border: 1px solid var(--line);
             border-radius: 8px;
-            padding: 15px;
+            padding: 18px;
+            display: grid;
+            gap: 12px;
         }
 
-        .insight-item-title {
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-row strong {
+            color: var(--text);
+        }
+
+        .summary-row span {
+            color: var(--muted);
+        }
+
+        section {
+            margin-top: 34px;
+        }
+
+        h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
+            letter-spacing: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 18px;
+            min-width: 0;
+        }
+
+        .card h3 {
+            margin: 0 0 14px;
+            font-size: 16px;
+            color: var(--muted);
             font-weight: 700;
-            color: var(--accent);
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .pick {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: baseline;
+            padding: 11px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .pick:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .team {
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .percent {
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        .red {
+            color: var(--red);
+        }
+
+        .blue {
+            color: var(--blue);
+        }
+
+        .matchups {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .match {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .match small {
+            color: var(--muted);
+            display: block;
             margin-bottom: 8px;
         }
 
-        .insight-item-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+        .vs {
+            color: var(--muted);
+            font-size: 12px;
+            margin: 6px 0;
         }
 
-        /* Probability Summary Table */
-        .prob-summary-table {
-            background: var(--dark-lighter);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
         }
 
-        .prob-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.95rem;
+            min-width: 980px;
         }
 
-        .prob-table thead {
-            background: rgba(255, 70, 85, 0.1);
-        }
-
-        .prob-table th {
-            padding: 15px 12px;
+        th, td {
+            padding: 12px 14px;
             text-align: left;
-            font-weight: 700;
-            color: var(--accent);
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            background: var(--panel-soft);
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
             white-space: nowrap;
         }
 
-        .prob-table th:first-child {
-            border-top-left-radius: 12px;
+        .players {
+            color: var(--muted);
+            max-width: 280px;
         }
 
-        .prob-table th:last-child {
-            border-top-right-radius: 12px;
+        .note {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 12px;
         }
 
-        .prob-table tbody tr {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: background 0.2s ease;
+        footer {
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 14px;
         }
 
-        .prob-table tbody tr:hover {
-            background: rgba(255, 70, 85, 0.05);
-        }
-
-        .prob-table td {
-            padding: 15px 12px;
-            color: var(--text);
-        }
-
-        .prob-table .team-name {
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .prob-table .prob-cell {
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .prob-table .prob-high {
-            color: var(--success);
-        }
-
-        .prob-table .prob-medium {
-            color: var(--secondary);
-        }
-
-        .prob-table .prob-low {
-            color: var(--text-muted);
-        }
-
-        .prob-table .total-advance {
-            background: rgba(0, 230, 118, 0.1);
-            border-left: 3px solid var(--success);
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .prob-table .total-eliminated {
-            background: rgba(255, 23, 68, 0.1);
-            border-left: 3px solid var(--danger);
-            font-weight: 700;
-            color: var(--danger);
-        }
-
-        /* Chart Container */
-        .chart-container {
-            background: var(--dark-lighter);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 40px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .chart-title {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            text-align: center;
-            color: var(--accent);
-        }
-
-        .chart-wrapper {
-            position: relative;
-            height: 400px;
-        }
-
-        /* Final Recommendations */
-        .final-picks {
-            background: linear-gradient(135deg, rgba(255, 70, 85, 0.1) 0%, rgba(255, 167, 38, 0.1) 100%);
-            border: 2px solid var(--primary);
-            border-radius: 20px;
-            padding: 50px;
-            margin: 60px 0;
-        }
-
-        .final-picks-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary);
-        }
-
-        .picks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .pick-category {
-            background: var(--dark-lighter);
-            border-radius: 16px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .pick-category-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pick-list {
-            list-style: none;
-        }
-
-        .pick-item {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pick-team {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .pick-prob {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--dark-lighter);
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .footer-warning {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid var(--warning);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 800px;
-            color: var(--warning);
-            font-size: 0.9rem;
-        }
-
-        .author-section {
-            background: linear-gradient(135deg, rgba(255, 70, 85, 0.05) 0%, rgba(0, 217, 255, 0.05) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin: 30px auto;
-            max-width: 800px;
-            text-align: center;
-        }
-
-        .author-title {
-            font-size: 1.2rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .author-name {
-            font-size: 1.5rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .author-title-text {
-            font-size: 1.1rem;
-            color: var(--text);
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .author-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-
-        .author-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text);
-            text-decoration: none;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .author-link:hover {
-            background: rgba(255, 70, 85, 0.2);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .author-link-icon {
-            font-size: 1.2rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 60px 20px 40px;
+        @media (max-width: 900px) {
+            .hero,
+            .grid {
+                grid-template-columns: 1fr;
             }
 
-            .section {
-                padding: 60px 20px;
+            .matchups {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            main {
+                padding: 26px 14px 44px;
             }
 
-            .swiss-explainer,
-            .final-picks {
-                padding: 30px 20px;
-            }
-
-            .result-category {
-                padding: 25px 20px;
-            }
-
-            .prediction-card {
+            .nav {
+                align-items: flex-start;
                 flex-direction: column;
-                text-align: center;
             }
 
-            .prediction-probability {
-                text-align: center;
+            .matchups {
+                grid-template-columns: 1fr;
             }
-
-            .author-section {
-                padding: 20px;
-            }
-
-            .author-links {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .author-link {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-in {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        /* Scroll Progress Bar */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            z-index: 9999;
-            transition: width 0.1s ease;
         }
     </style>
 </head>
 <body>
-    <!-- Scroll Progress -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">Análise Científica</div>
-            <h1>Budapest Major 2025<br>Stage 2 Predictions</h1>
-            <p class="hero-subtitle">Predições baseadas em dados usando 10.000 simulações Monte Carlo do sistema Swiss</p>
-
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="hero-stat-value">10,000</span>
-                    <span class="hero-stat-label">Simulações</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value">16</span>
-                    <span class="hero-stat-label">Times</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value">4</span>
-                    <span class="hero-stat-label">Fatores</span>
-                </div>
-            </div>
+    <div class="topbar">
+        <div class="nav">
+            <span class="brand">IEM Cologne Major 2026 Predictor</span>
+            <span>Stage 1 · 10.000 simulações Monte Carlo</span>
         </div>
-    </section>
+    </div>
 
-    <!-- Methodology Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">01</div>
-                <h2 class="section-title">Metodologia</h2>
-                <p class="section-description">
-                    Sistema de predição multi-fatorial com análise estatística avançada
-                </p>
+    <main>
+        <section class="hero">
+            <div>
+                <h1>Cologne 2026 Stage 1 Predictions</h1>
+                <p class="lead">Predições atualizadas para o primeiro Swiss stage usando a base centralizada de times, seeds, lineups, forma, consistência e potencial de upset.</p>
             </div>
-
-            <div class="methodology-grid">
-                <div class="method-card">
-                    <div class="method-icon">📊</div>
-                    <h3 class="method-title">HLTV Ranking</h3>
-                    <span class="method-weight">30% do peso</span>
-                    <p class="method-description">
-                        Rankings oficiais HLTV dos times, considerando performance histórica e resultados recentes em torneios tier 1 e tier 2.
-                    </p>
+            <div class="summary">
+                <div class="summary-row">
+                    <span>Evento</span>
+                    <strong>IEM Cologne Major 2026</strong>
                 </div>
-
-                <div class="method-card">
-                    <div class="method-icon">🔥</div>
-                    <h3 class="method-title">Forma Recente</h3>
-                    <span class="method-weight">30% do peso</span>
-                    <p class="method-description">
-                        Momentum e performance nas últimas semanas, incluindo vitórias em torneios recentes e nível de jogo demonstrado.
-                    </p>
+                <div class="summary-row">
+                    <span>Stage</span>
+                    <strong>Stage 1 · 2 a 5 de junho</strong>
                 </div>
-
-                <div class="method-card">
-                    <div class="method-icon">🎯</div>
-                    <h3 class="method-title">Stage 1 Performance</h3>
-                    <span class="method-weight">25% do peso</span>
-                    <p class="method-description">
-                        Resultados do Stage 1 do Major: times que fizeram 3-0 recebem pontuação máxima, 3-1 recebem pontuação alta, etc.
-                    </p>
+                <div class="summary-row">
+                    <span>Formato</span>
+                    <strong>16 times Swiss</strong>
                 </div>
-
-                <div class="method-card">
-                    <div class="method-icon">📈</div>
-                    <h3 class="method-title">Consistência</h3>
-                    <span class="method-weight">15% do peso</span>
-                    <p class="method-description">
-                        Histórico de estabilidade e confiabilidade do time, medindo variância de performance ao longo do tempo.
-                    </p>
+                <div class="summary-row">
+                    <span>Snapshot</span>
+                    <strong>22 de maio de 2026</strong>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Probability Explanation Section -->
-    <section class="section" style="background: rgba(255, 255, 255, 0.01);">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">02</div>
-                <h2 class="section-title">Como Interpretar os Percentuais</h2>
-                <p class="section-description">
-                    Por que a chance de avançar é maior que a chance de fazer 3-0?
-                </p>
+        <section>
+            <h2>Picks Recomendados</h2>
+            <div class="grid">
+                <article class="card">
+                    <h3>3-0 Picks</h3>
+                    <div class="pick">
+                        <div>
+                            <div class="team">GamerLegion</div>
+                            <div class="meta">Seed proxy #17 · Strength 68.71</div>
+                        </div>
+                        <div class="percent green">43.20%</div>
+                    </div>
+                    <div class="pick">
+                        <div>
+                            <div class="team">BIG</div>
+                            <div class="meta">Seed proxy #18 · Strength 67.33</div>
+                        </div>
+                        <div class="percent green">34.91%</div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>0-3 Picks</h3>
+                    <div class="pick">
+                        <div>
+                            <div class="team">FlyQuest</div>
+                            <div class="meta">Seed proxy #32 · Strength 47.15</div>
+                        </div>
+                        <div class="percent red">35.25%</div>
+                    </div>
+                    <div class="pick">
+                        <div>
+                            <div class="team">THUNDER dOWNUNDER</div>
+                            <div class="meta">Seed proxy #31 · Strength 47.94</div>
+                        </div>
+                        <div class="percent red">30.51%</div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3>Avançar</h3>
+                    <div class="pick">
+                        <div class="team">BetBoom</div>
+                        <div class="percent blue">86.17%</div>
+                    </div>
+                    <div class="pick">
+                        <div class="team">B8</div>
+                        <div class="percent blue">82.62%</div>
+                    </div>
+                    <div class="pick">
+                        <div class="team">HEROIC</div>
+                        <div class="percent blue">68.32%</div>
+                    </div>
+                    <div class="pick">
+                        <div class="team">SINNERS</div>
+                        <div class="percent blue">61.81%</div>
+                    </div>
+                    <div class="pick">
+                        <div class="team">M80</div>
+                        <div class="percent blue">56.32%</div>
+                    </div>
+                    <div class="pick">
+                        <div class="team">NRG</div>
+                        <div class="percent blue">49.74%</div>
+                    </div>
+                </article>
             </div>
+            <p class="note">A lista de avanço exclui os dois picks escolhidos para 3-0, seguindo o padrão atual do script.</p>
+        </section>
 
-            <div class="prob-explainer">
-                <div class="prob-formula">
-                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1.1rem;">Fórmula da Probabilidade de Avançar:</p>
-                    <div class="prob-formula-text">
-                        P(Avançar) = P(3-0) + P(3-1) + P(3-2)
-                    </div>
-                </div>
-
-                <div class="prob-comparison">
-                    <div class="prob-card">
-                        <div class="prob-card-header">
-                            <div class="prob-card-icon">🎯</div>
-                            <h3 class="prob-card-title">3-0 Específico</h3>
-                            <p class="prob-card-subtitle">Uma forma de vencer</p>
-                        </div>
-                        <div class="prob-breakdown">
-                            <div class="prob-item" style="border-left-color: var(--primary);">
-                                <span class="prob-item-label">🏆 3-0 (Perfeito)</span>
-                                <span class="prob-item-value">49.56%</span>
-                            </div>
-                        </div>
-                        <div class="prob-total" style="background: rgba(255, 70, 85, 0.1); border-color: var(--primary);">
-                            <div class="prob-total-label">Total</div>
-                            <div class="prob-total-value" style="background: linear-gradient(135deg, var(--primary), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">49.56%</div>
-                        </div>
-                        <p style="margin-top: 20px; color: var(--text-muted); text-align: center; font-size: 0.9rem;">
-                            <strong>High Risk, High Reward</strong><br>
-                            O time precisa vencer EXATAMENTE 3-0
-                        </p>
-                    </div>
-
-                    <div class="prob-card">
-                        <div class="prob-card-header">
-                            <div class="prob-card-icon">✅</div>
-                            <h3 class="prob-card-title">Avançar (Qualquer)</h3>
-                            <p class="prob-card-subtitle">Três formas de vencer</p>
-                        </div>
-                        <div class="prob-breakdown">
-                            <div class="prob-item" style="border-left-color: var(--primary);">
-                                <span class="prob-item-label">🏆 3-0</span>
-                                <span class="prob-item-value">49.56%</span>
-                            </div>
-                            <div class="prob-item" style="border-left-color: var(--secondary);">
-                                <span class="prob-item-label">⚡ 3-1</span>
-                                <span class="prob-item-value">37.84%</span>
-                            </div>
-                            <div class="prob-item" style="border-left-color: var(--accent);">
-                                <span class="prob-item-label">🎮 3-2</span>
-                                <span class="prob-item-value">10.11%</span>
-                            </div>
-                        </div>
-                        <div class="prob-total">
-                            <div class="prob-total-label">Total</div>
-                            <div class="prob-total-value">97.51%</div>
-                        </div>
-                        <p style="margin-top: 20px; color: var(--text-muted); text-align: center; font-size: 0.9rem;">
-                            <strong>Safe Pick</strong><br>
-                            O time só precisa conseguir 3 vitórias
-                        </p>
-                    </div>
-                </div>
-
-                <div class="insight-box">
-                    <h4 class="insight-box-title">
-                        <span>💡</span> Por que isso acontece?
-                    </h4>
-                    <div class="insight-box-content">
-                        <p style="margin-bottom: 15px;">
-                            Quando você escolhe um time para <strong style="color: var(--primary);">3-0</strong>, está apostando que ele fará um desempenho <strong>perfeito</strong>.
-                            Qualquer derrota elimina a possibilidade (se Aurora fizer 3-1, você perde os pontos).
-                        </p>
-                        <p style="margin-bottom: 15px;">
-                            Quando você escolhe um time para <strong style="color: var(--success);">avançar</strong>, está apostando que ele conseguirá
-                            <strong>3 vitórias antes de 3 derrotas</strong>. Não importa o caminho: 3-0, 3-1 ou 3-2 - todas contam!
-                        </p>
-                        <p style="color: var(--accent); font-weight: 600;">
-                            Por isso Aurora tem 49.56% de fazer 3-0, mas 97.51% de avançar (somando 3-0 + 3-1 + 3-2).
-                        </p>
-                    </div>
-                </div>
-
-                <div class="insight-box" style="background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(0, 230, 118, 0.1)); border-left-color: var(--accent);">
-                    <h4 class="insight-box-title" style="color: var(--accent);">
-                        <span>🎲</span> Estratégia para Pick'ems
-                    </h4>
-                    <div class="insight-grid">
-                        <div class="insight-item">
-                            <div class="insight-item-title">Pick 3-0</div>
-                            <div class="insight-item-desc">
-                                Escolha times top tier com matchups favoráveis pelo seeding. É arriscado mas vale mais pontos!
-                            </div>
-                        </div>
-                        <div class="insight-item">
-                            <div class="insight-item-title">Pick 0-3</div>
-                            <div class="insight-item-desc">
-                                Escolha os times mais fracos. Mais fácil acertar que 3-0, pois times ruins tendem a perder consistentemente.
-                            </div>
-                        </div>
-                        <div class="insight-item">
-                            <div class="insight-item-title">Picks de Avançar</div>
-                            <div class="insight-item-desc">
-                                Escolha times com >70% de chance. São picks "seguros" onde você maximiza a probabilidade de acerto.
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <section>
+            <h2>Round 1 Gerado por Seed</h2>
+            <div class="matchups">
+                <div class="match"><small>Match 1</small><strong>GamerLegion</strong><div class="vs">vs</div><strong>FlyQuest</strong></div>
+                <div class="match"><small>Match 2</small><strong>BIG</strong><div class="vs">vs</div><strong>THUNDER dOWNUNDER</strong></div>
+                <div class="match"><small>Match 3</small><strong>BetBoom</strong><div class="vs">vs</div><strong>Lynn Vision</strong></div>
+                <div class="match"><small>Match 4</small><strong>B8</strong><div class="vs">vs</div><strong>TYLOO</strong></div>
+                <div class="match"><small>Match 5</small><strong>HEROIC</strong><div class="vs">vs</div><strong>Liquid</strong></div>
+                <div class="match"><small>Match 6</small><strong>SINNERS</strong><div class="vs">vs</div><strong>MIBR</strong></div>
+                <div class="match"><small>Match 7</small><strong>M80</strong><div class="vs">vs</div><strong>Gaimin Gladiators</strong></div>
+                <div class="match"><small>Match 8</small><strong>NRG</strong><div class="vs">vs</div><strong>Sharks</strong></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Swiss System Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">03</div>
-                <h2 class="section-title">Sistema Swiss</h2>
-                <p class="section-description">
-                    Entenda como funciona o formato de competição utilizado no Major
-                </p>
-            </div>
-
-            <div class="swiss-explainer">
-                <h3 class="swiss-title">Como Funciona o Swiss System</h3>
-                <div class="swiss-steps">
-                    <div class="swiss-step">
-                        <div class="swiss-step-number">1</div>
-                        <div class="swiss-step-content">
-                            <h4>Seeding Inicial</h4>
-                            <p>16 times são ordenados por seeding (combinação de Valve Regional Standings e Stage 1)</p>
-                        </div>
-                    </div>
-                    <div class="swiss-step">
-                        <div class="swiss-step-number">2</div>
-                        <div class="swiss-step-content">
-                            <h4>Confrontos por Record</h4>
-                            <p>Times com mesmo número de vitórias e derrotas jogam entre si (1-0 vs 1-0, 0-1 vs 0-1)</p>
-                        </div>
-                    </div>
-                    <div class="swiss-step">
-                        <div class="swiss-step-number">3</div>
-                        <div class="swiss-step-content">
-                            <h4>Emparelhamento Balanceado</h4>
-                            <p>Dentro de cada grupo de record, melhor seed enfrenta pior seed (#1 vs #8, #2 vs #7, etc.)</p>
-                        </div>
-                    </div>
-                    <div class="swiss-step">
-                        <div class="swiss-step-number">4</div>
-                        <div class="swiss-step-content">
-                            <h4>Classificação e Eliminação</h4>
-                            <p>Times com 3 vitórias avançam, times com 3 derrotas são eliminados. O processo continua até todos serem classificados ou eliminados.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Monte Carlo Explanation Section -->
-    <section class="section" style="background: rgba(255, 255, 255, 0.01);">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">04</div>
-                <h2 class="section-title">Simulações Monte Carlo</h2>
-                <p class="section-description">
-                    Como geramos probabilidades confiáveis através de milhares de simulações
-                </p>
-            </div>
-
-            <div class="swiss-explainer" style="border-color: rgba(0, 217, 255, 0.3);">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🎲</div>
-                    <h3 class="swiss-title" style="color: var(--accent);">O que é Monte Carlo?</h3>
-                    <p style="color: var(--text); font-size: 1.1rem; max-width: 800px; margin: 0 auto;">
-                        Monte Carlo é um método estatístico que usa <strong style="color: var(--accent);">aleatoriedade repetida</strong>
-                        para calcular probabilidades de eventos complexos. Em vez de tentar calcular matematicamente todas as possibilidades,
-                        nós <strong>simulamos o torneio milhares de vezes</strong> e contamos os resultados.
-                    </p>
-                </div>
-
-                <div class="insight-box" style="background: rgba(0, 217, 255, 0.05); border-left-color: var(--accent);">
-                    <h4 class="insight-box-title" style="color: var(--accent);">
-                        <span>💡</span> Como Funciona na Prática
-                    </h4>
-                    <div class="insight-box-content">
-                        <div style="display: grid; gap: 20px;">
-                            <div style="display: flex; gap: 15px; align-items: start;">
-                                <div style="background: var(--accent); color: var(--dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-                                <div>
-                                    <strong style="color: var(--text);">Simular uma vez:</strong> O algoritmo simula TODO o Stage 2, rodada por rodada, usando as probabilidades calculadas para cada confronto. Aurora tem 80% de chance contra um time fraco? Em 80% das simulações ela vence esse jogo.
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 15px; align-items: start;">
-                                <div style="background: var(--accent); color: var(--dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-                                <div>
-                                    <strong style="color: var(--text);">Repetir 10.000 vezes:</strong> Cada simulação pode ter resultados diferentes devido à aleatoriedade (upsets acontecem!). Depois de 10.000 simulações, temos um retrato estatístico muito preciso.
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 15px; align-items: start;">
-                                <div style="background: var(--accent); color: var(--dark); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-                                <div>
-                                    <strong style="color: var(--text);">Calcular probabilidades:</strong> Se Aurora fez 3-0 em 4.956 das 10.000 simulações, sua probabilidade de 3-0 é 49.56%. Simples assim!
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px;">
-                    <div style="background: rgba(255, 167, 38, 0.05); border: 1px solid var(--secondary); border-radius: 12px; padding: 25px;">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">⚡</div>
-                        <h4 style="color: var(--secondary); margin-bottom: 10px; font-size: 1.2rem;">Por que 10.000?</h4>
-                        <p style="color: var(--text-muted); font-size: 0.95rem;">
-                            Quanto mais simulações, mais precisas as probabilidades. 10.000 é o ponto ideal entre precisão e tempo de processamento.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0, 230, 118, 0.05); border: 1px solid var(--success); border-radius: 12px; padding: 25px;">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🎯</div>
-                        <h4 style="color: var(--success); margin-bottom: 10px; font-size: 1.2rem;">Considera Upsets</h4>
-                        <p style="color: var(--text-muted); font-size: 0.95rem;">
-                            Times fracos podem vencer times fortes (com menor probabilidade). O Monte Carlo captura essa variância naturalmente.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0, 217, 255, 0.05); border: 1px solid var(--accent); border-radius: 12px; padding: 25px;">
-                        <div style="font-size: 2.5rem; margin-bottom: 15px;">🔬</div>
-                        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 1.2rem;">Método Científico</h4>
-                        <p style="color: var(--text-muted); font-size: 0.95rem;">
-                            Usado em física, finanças, meteorologia e esports. É uma técnica comprovada para modelar sistemas complexos.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="prob-formula" style="margin-top: 40px;">
-                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 1rem;">Exemplo de Cálculo:</p>
-                    <div class="prob-formula-text" style="font-size: 1rem;">
-                        Aurora fez 3-0 em 4.956 de 10.000 simulações<br>
-                        P(Aurora 3-0) = 4.956 / 10.000 = 49.56%
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Seeding Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">05</div>
-                <h2 class="section-title">Initial Seeding</h2>
-                <p class="section-description">
-                    Ordem dos 16 times baseada em Valve Regional Standings e Stage 1
-                </p>
-            </div>
-
-            <div class="seeding-grid">
-                <div class="seed-card">
-                    <div class="seed-number">Seed #1</div>
-                    <div class="seed-team">Aurora</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #2</div>
-                    <div class="seed-team">NAVI</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #3</div>
-                    <div class="seed-team">Liquid</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #4</div>
-                    <div class="seed-team">3DMAX</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #5</div>
-                    <div class="seed-team">Astralis</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #6</div>
-                    <div class="seed-team">TYLOO</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #7</div>
-                    <div class="seed-team">MIBR</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #8</div>
-                    <div class="seed-team">Passion UA</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #9</div>
-                    <div class="seed-team">M80</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #10</div>
-                    <div class="seed-team">FlyQuest</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #11</div>
-                    <div class="seed-team">B8</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #12</div>
-                    <div class="seed-team">fnatic</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #13</div>
-                    <div class="seed-team">NiP</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #14</div>
-                    <div class="seed-team">PARIVISION</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #15</div>
-                    <div class="seed-team">Imperial</div>
-                </div>
-                <div class="seed-card">
-                    <div class="seed-number">Seed #16</div>
-                    <div class="seed-team">FaZe</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Simulation Results -->
-    <section class="section" style="background: rgba(255, 255, 255, 0.01);">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-number">06</div>
-                <h2 class="section-title">Resultados das Simulações</h2>
-                <p class="section-description">
-                    10.000 simulações Monte Carlo com confrontos R1 reais e Swiss System correto
-                </p>
-            </div>
-
-            <!-- Chart -->
-            <div class="chart-container">
-                <h3 class="chart-title">Distribuição de Probabilidades - Top 8 Times</h3>
-                <div class="chart-wrapper">
-                    <canvas id="probabilityChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Probability Summary Table -->
-            <div class="prob-summary-table">
-                <h3 class="chart-title">Resumo Completo de Probabilidades - Todos os Times</h3>
-                <table class="prob-table">
+        <section>
+            <h2>Tabela Completa</h2>
+            <div class="table-wrap">
+                <table>
                     <thead>
                         <tr>
                             <th>Time</th>
-                            <th>Seed</th>
-                            <th class="prob-cell">3-0</th>
-                            <th class="prob-cell">3-1</th>
-                            <th class="prob-cell">3-2</th>
-                            <th class="prob-cell total-advance">✅ Avançar</th>
-                            <th class="prob-cell">2-3</th>
-                            <th class="prob-cell">1-3</th>
-                            <th class="prob-cell">0-3</th>
-                            <th class="prob-cell total-eliminated">❌ Eliminar</th>
+                            <th class="num">Seed</th>
+                            <th class="num">Strength</th>
+                            <th class="num">3-0</th>
+                            <th class="num">3-1</th>
+                            <th class="num">3-2</th>
+                            <th class="num">Avança</th>
+                            <th class="num">0-3</th>
+                            <th>Lineup</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="team-name">Aurora</td>
-                            <td>#1</td>
-                            <td class="prob-cell prob-high">49.56%</td>
-                            <td class="prob-cell prob-medium">37.84%</td>
-                            <td class="prob-cell prob-low">10.11%</td>
-                            <td class="prob-cell total-advance">97.51%</td>
-                            <td class="prob-cell prob-low">1.31%</td>
-                            <td class="prob-cell prob-low">0.84%</td>
-                            <td class="prob-cell prob-low">0.34%</td>
-                            <td class="prob-cell total-eliminated">2.49%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">NAVI</td>
-                            <td>#2</td>
-                            <td class="prob-cell prob-high">46.73%</td>
-                            <td class="prob-cell prob-medium">35.25%</td>
-                            <td class="prob-cell prob-low">13.55%</td>
-                            <td class="prob-cell total-advance">95.53%</td>
-                            <td class="prob-cell prob-low">2.37%</td>
-                            <td class="prob-cell prob-low">1.38%</td>
-                            <td class="prob-cell prob-low">0.72%</td>
-                            <td class="prob-cell total-eliminated">4.47%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">Astralis</td>
-                            <td>#5</td>
-                            <td class="prob-cell prob-medium">24.63%</td>
-                            <td class="prob-cell prob-medium">35.73%</td>
-                            <td class="prob-cell prob-medium">24.26%</td>
-                            <td class="prob-cell total-advance">84.62%</td>
-                            <td class="prob-cell prob-low">9.21%</td>
-                            <td class="prob-cell prob-low">4.01%</td>
-                            <td class="prob-cell prob-low">2.16%</td>
-                            <td class="prob-cell total-eliminated">15.38%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">3DMAX</td>
-                            <td>#4</td>
-                            <td class="prob-cell prob-medium">20.90%</td>
-                            <td class="prob-cell prob-medium">33.67%</td>
-                            <td class="prob-cell prob-medium">24.48%</td>
-                            <td class="prob-cell total-advance">79.05%</td>
-                            <td class="prob-cell prob-low">10.82%</td>
-                            <td class="prob-cell prob-low">6.85%</td>
-                            <td class="prob-cell prob-low">3.28%</td>
-                            <td class="prob-cell total-eliminated">20.95%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">M80</td>
-                            <td>#9</td>
-                            <td class="prob-cell prob-medium">16.60%</td>
-                            <td class="prob-cell prob-high">42.42%</td>
-                            <td class="prob-cell prob-medium">28.07%</td>
-                            <td class="prob-cell total-advance">87.09%</td>
-                            <td class="prob-cell prob-low">7.29%</td>
-                            <td class="prob-cell prob-low">4.34%</td>
-                            <td class="prob-cell prob-low">1.28%</td>
-                            <td class="prob-cell total-eliminated">12.91%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">B8</td>
-                            <td>#11</td>
-                            <td class="prob-cell prob-low">12.90%</td>
-                            <td class="prob-cell prob-medium">27.59%</td>
-                            <td class="prob-cell prob-medium">30.01%</td>
-                            <td class="prob-cell total-advance">70.50%</td>
-                            <td class="prob-cell prob-medium">18.96%</td>
-                            <td class="prob-cell prob-low">8.78%</td>
-                            <td class="prob-cell prob-low">1.76%</td>
-                            <td class="prob-cell total-eliminated">29.50%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">FlyQuest</td>
-                            <td>#10</td>
-                            <td class="prob-cell prob-low">7.62%</td>
-                            <td class="prob-cell prob-medium">20.54%</td>
-                            <td class="prob-cell prob-medium">31.70%</td>
-                            <td class="prob-cell total-advance">59.86%</td>
-                            <td class="prob-cell prob-medium">20.20%</td>
-                            <td class="prob-cell prob-medium">14.81%</td>
-                            <td class="prob-cell prob-low">5.13%</td>
-                            <td class="prob-cell total-eliminated">40.14%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">Liquid</td>
-                            <td>#3</td>
-                            <td class="prob-cell prob-low">5.03%</td>
-                            <td class="prob-cell prob-medium">16.53%</td>
-                            <td class="prob-cell prob-medium">22.88%</td>
-                            <td class="prob-cell total-advance">44.44%</td>
-                            <td class="prob-cell prob-medium">21.23%</td>
-                            <td class="prob-cell prob-medium">18.63%</td>
-                            <td class="prob-cell prob-medium">15.70%</td>
-                            <td class="prob-cell total-eliminated">55.56%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">fnatic</td>
-                            <td>#12</td>
-                            <td class="prob-cell prob-low">4.18%</td>
-                            <td class="prob-cell prob-medium">14.89%</td>
-                            <td class="prob-cell prob-medium">26.99%</td>
-                            <td class="prob-cell total-advance">46.06%</td>
-                            <td class="prob-cell prob-medium">26.45%</td>
-                            <td class="prob-cell prob-medium">18.19%</td>
-                            <td class="prob-cell prob-low">9.30%</td>
-                            <td class="prob-cell total-eliminated">53.94%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">FaZe</td>
-                            <td>#16</td>
-                            <td class="prob-cell prob-low">3.38%</td>
-                            <td class="prob-cell prob-low">8.32%</td>
-                            <td class="prob-cell prob-medium">23.90%</td>
-                            <td class="prob-cell total-advance">35.60%</td>
-                            <td class="prob-cell prob-medium">26.60%</td>
-                            <td class="prob-cell prob-medium">23.61%</td>
-                            <td class="prob-cell prob-medium">14.19%</td>
-                            <td class="prob-cell total-eliminated">64.40%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">NiP</td>
-                            <td>#13</td>
-                            <td class="prob-cell prob-low">2.56%</td>
-                            <td class="prob-cell prob-low">10.93%</td>
-                            <td class="prob-cell prob-medium">19.72%</td>
-                            <td class="prob-cell total-advance">33.21%</td>
-                            <td class="prob-cell prob-medium">23.70%</td>
-                            <td class="prob-cell prob-medium">22.22%</td>
-                            <td class="prob-cell prob-medium">20.87%</td>
-                            <td class="prob-cell total-eliminated">66.79%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">Passion UA</td>
-                            <td>#8</td>
-                            <td class="prob-cell prob-low">1.85%</td>
-                            <td class="prob-cell prob-low">7.23%</td>
-                            <td class="prob-cell prob-medium">16.90%</td>
-                            <td class="prob-cell total-advance">25.98%</td>
-                            <td class="prob-cell prob-medium">23.16%</td>
-                            <td class="prob-cell prob-medium">26.20%</td>
-                            <td class="prob-cell prob-medium">24.66%</td>
-                            <td class="prob-cell total-eliminated">74.02%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">PARIVISION</td>
-                            <td>#14</td>
-                            <td class="prob-cell prob-low">1.52%</td>
-                            <td class="prob-cell prob-low">6.03%</td>
-                            <td class="prob-cell prob-medium">14.99%</td>
-                            <td class="prob-cell total-advance">22.54%</td>
-                            <td class="prob-cell prob-medium">22.08%</td>
-                            <td class="prob-cell prob-medium">26.05%</td>
-                            <td class="prob-cell prob-medium">29.33%</td>
-                            <td class="prob-cell total-eliminated">77.46%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">Imperial</td>
-                            <td>#15</td>
-                            <td class="prob-cell prob-low">1.13%</td>
-                            <td class="prob-cell prob-low">4.87%</td>
-                            <td class="prob-cell prob-low">12.59%</td>
-                            <td class="prob-cell total-advance">18.59%</td>
-                            <td class="prob-cell prob-medium">20.15%</td>
-                            <td class="prob-cell prob-medium">25.57%</td>
-                            <td class="prob-cell prob-high">35.69%</td>
-                            <td class="prob-cell total-eliminated">81.41%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">TYLOO</td>
-                            <td>#6</td>
-                            <td class="prob-cell prob-low">0.32%</td>
-                            <td class="prob-cell prob-low">1.73%</td>
-                            <td class="prob-cell prob-low">5.67%</td>
-                            <td class="prob-cell total-advance">7.72%</td>
-                            <td class="prob-cell prob-medium">12.08%</td>
-                            <td class="prob-cell prob-medium">22.26%</td>
-                            <td class="prob-cell prob-high">57.94%</td>
-                            <td class="prob-cell total-eliminated">92.28%</td>
-                        </tr>
-                        <tr>
-                            <td class="team-name">MIBR</td>
-                            <td>#7</td>
-                            <td class="prob-cell prob-low">0.24%</td>
-                            <td class="prob-cell prob-low">1.29%</td>
-                            <td class="prob-cell prob-low">4.78%</td>
-                            <td class="prob-cell total-advance">6.31%</td>
-                            <td class="prob-cell prob-low">10.58%</td>
-                            <td class="prob-cell prob-medium">19.05%</td>
-                            <td class="prob-cell prob-high">64.06%</td>
-                            <td class="prob-cell total-eliminated">93.69%</td>
-                        </tr>
+                        <tr><td><strong>GamerLegion</strong></td><td class="num">17</td><td class="num">68.71</td><td class="num">43.20%</td><td class="num">34.23%</td><td class="num">15.07%</td><td class="num green">92.50%</td><td class="num">1.03%</td><td class="players">Snax, REZ, Tauson, PR, hypex</td></tr>
+                        <tr><td><strong>BIG</strong></td><td class="num">18</td><td class="num">67.33</td><td class="num">34.91%</td><td class="num">36.58%</td><td class="num">18.58%</td><td class="num green">90.07%</td><td class="num">1.39%</td><td class="players">tabseN, JDC, faveN, blameF, gr1ks</td></tr>
+                        <tr><td><strong>BetBoom</strong></td><td class="num">19</td><td class="num">65.94</td><td class="num">29.18%</td><td class="num">36.03%</td><td class="num">20.96%</td><td class="num green">86.17%</td><td class="num">1.65%</td><td class="players">Boombl4, zorte, S1ren, d1Ledez, Magnojez</td></tr>
+                        <tr><td><strong>B8</strong></td><td class="num">20</td><td class="num">64.85</td><td class="num">24.38%</td><td class="num">34.91%</td><td class="num">23.33%</td><td class="num green">82.62%</td><td class="num">2.28%</td><td class="players">alex666, npl, kensizor, esenthial, s1zzi</td></tr>
+                        <tr><td><strong>HEROIC</strong></td><td class="num">21</td><td class="num">60.01</td><td class="num">14.46%</td><td class="num">26.77%</td><td class="num">27.09%</td><td class="num green">68.32%</td><td class="num">4.27%</td><td class="players">xfl0ud, nilo, susp, Chr1zN, yxngstxr</td></tr>
+                        <tr><td><strong>SINNERS</strong></td><td class="num">22</td><td class="num">58.47</td><td class="num">11.79%</td><td class="num">24.31%</td><td class="num">25.71%</td><td class="num green">61.81%</td><td class="num">6.09%</td><td class="players">beastik, SHOCK, MoDo, kisserek, stressarN</td></tr>
+                        <tr><td><strong>M80</strong></td><td class="num">23</td><td class="num">57.39</td><td class="num">9.12%</td><td class="num">21.05%</td><td class="num">26.15%</td><td class="num green">56.32%</td><td class="num">7.05%</td><td class="players">slaxz-, Swisher, s1n, JBa, Lake</td></tr>
+                        <tr><td><strong>NRG</strong></td><td class="num">24</td><td class="num">56.00</td><td class="num">7.01%</td><td class="num">18.71%</td><td class="num">24.02%</td><td class="num green">49.74%</td><td class="num">9.50%</td><td class="players">nitr0, Sonic, oSee, Grim, br0</td></tr>
+                        <tr><td><strong>Sharks</strong></td><td class="num">25</td><td class="num">54.76</td><td class="num">6.61%</td><td class="num">15.94%</td><td class="num">22.34%</td><td class="num">44.89%</td><td class="num">10.25%</td><td class="players">gafolo, koala, maxxkor, rdnzao, doc</td></tr>
+                        <tr><td><strong>Gaimin Gladiators</strong></td><td class="num">26</td><td class="num">53.68</td><td class="num">5.32%</td><td class="num">13.29%</td><td class="num">20.94%</td><td class="num">39.55%</td><td class="num">12.56%</td><td class="players">fer, HEN1, NEKIZ, Luken, JOTA</td></tr>
+                        <tr><td><strong>MIBR</strong></td><td class="num">27</td><td class="num">52.44</td><td class="num">4.35%</td><td class="num">10.76%</td><td class="num">17.72%</td><td class="num">32.83%</td><td class="num">15.18%</td><td class="players">LNZ, brnz4n, insani, venomzera, kl1m</td></tr>
+                        <tr><td><strong>Liquid</strong></td><td class="num">28</td><td class="num">51.65</td><td class="num">2.96%</td><td class="num">7.88%</td><td class="num">16.70%</td><td class="num">27.54%</td><td class="num">17.74%</td><td class="players">NAF, EliGE, malbsMd, siuhy, ultimate</td></tr>
+                        <tr><td><strong>TYLOO</strong></td><td class="num">29</td><td class="num">50.41</td><td class="num">2.13%</td><td class="num">7.44%</td><td class="num">14.08%</td><td class="num">23.65%</td><td class="num red">21.26%</td><td class="players">JamYoung, Jee, Mercury, Moseyuh, Zero</td></tr>
+                        <tr><td><strong>Lynn Vision</strong></td><td class="num">30</td><td class="num">49.17</td><td class="num">1.81%</td><td class="num">5.30%</td><td class="num">12.09%</td><td class="num">19.20%</td><td class="num red">23.99%</td><td class="players">Westmelon, z4KR, Starry, EmiliaQAQ, C4LLM3SU3</td></tr>
+                        <tr><td><strong>THUNDER dOWNUNDER</strong></td><td class="num">31</td><td class="num">47.94</td><td class="num">1.54%</td><td class="num">3.77%</td><td class="num">8.45%</td><td class="num">13.76%</td><td class="num red">30.51%</td><td class="players">dexter, Liazz, aliStair, asap, TjP</td></tr>
+                        <tr><td><strong>FlyQuest</strong></td><td class="num">32</td><td class="num">47.15</td><td class="num">1.23%</td><td class="num">3.03%</td><td class="num">6.77%</td><td class="num">11.03%</td><td class="num red">35.25%</td><td class="players">jks, INS, Vexite, nettik, story</td></tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-    </section>
+            <p class="note">As porcentagens podem variar levemente a cada execução porque o modelo usa simulação Monte Carlo.</p>
+        </section>
 
-    <!-- Final Recommendations -->
-    <section class="section">
-        <div class="container">
-            <div class="final-picks">
-                <h2 class="final-picks-title">🎯 Recomendações Finais para Pick'ems</h2>
-                <div class="picks-grid">
-                    <div class="pick-category">
-                        <h3 class="pick-category-title">
-                            <span>🏆</span> 3-0 (Escolha 2)
-                        </h3>
-                        <ul class="pick-list">
-                            <li class="pick-item">
-                                <span class="pick-team">Aurora</span>
-                                <span class="pick-prob">49.56%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">NAVI</span>
-                                <span class="pick-prob">46.73%</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="pick-category">
-                        <h3 class="pick-category-title">
-                            <span>💀</span> 0-3 (Escolha 2)
-                        </h3>
-                        <ul class="pick-list">
-                            <li class="pick-item">
-                                <span class="pick-team">MIBR</span>
-                                <span class="pick-prob">64.06%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">TYLOO</span>
-                                <span class="pick-prob">57.94%</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="pick-category" style="grid-column: 1 / -1;">
-                        <h3 class="pick-category-title">
-                            <span>✅</span> Avançam (Escolha 6)
-                        </h3>
-                        <ul class="pick-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
-                            <li class="pick-item">
-                                <span class="pick-team">M80</span>
-                                <span class="pick-prob">87.09%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">Astralis</span>
-                                <span class="pick-prob">84.62%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">3DMAX</span>
-                                <span class="pick-prob">79.05%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">B8</span>
-                                <span class="pick-prob">70.50%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">FlyQuest</span>
-                                <span class="pick-prob">59.86%</span>
-                            </li>
-                            <li class="pick-item">
-                                <span class="pick-team">fnatic</span>
-                                <span class="pick-prob">46.06%</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <!-- Author Section -->
-            <div class="author-section">
-                <div class="author-title">👨‍💻 Desenvolvido por</div>
-                <div class="author-name">Fernando Augusto Schmitz</div>
-                <div class="author-title-text">Cientista de Dados</div>
-                <div class="author-links">
-                    <a href="https://wa.me/5548999125833" target="_blank" class="author-link">
-                        <span class="author-link-icon">📱</span>
-                        <span>WhatsApp</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/feschmitz/" target="_blank" class="author-link">
-                        <span class="author-link-icon">💼</span>
-                        <span>LinkedIn</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="footer-warning">
-                <strong>⚠️ Aviso Importante:</strong> Estas predições são baseadas em análise estatística e 10.000 simulações Monte Carlo. CS2 tem alta variância e upsets são comuns no formato Swiss. Considere também notícias recentes, mudanças de roster e sua própria análise antes de fazer seus Pick'ems.
-            </div>
-            <p><strong>Stage 2:</strong> 29 de Novembro - 2 de Dezembro, 2025</p>
-            <p><strong>Formato:</strong> Swiss System (BO1 até decisão, BO3 em jogos de avanço/eliminação)</p>
-            <p style="margin-top: 20px;">📊 Análise gerada com Python | Simulações Monte Carlo | Dados: HLTV & Liquipedia</p>
-            <p style="font-size: 0.85rem; margin-top: 15px;">© 2025 Budapest Major Predictions | Boa sorte com seus Pick'ems! 🎮</p>
-        </div>
-    </footer>
-
-    <script>
-        // Scroll Progress Bar
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('scrollProgress').style.width = scrolled + '%';
-        });
-
-        // Chart.js Configuration
-        const ctx = document.getElementById('probabilityChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Aurora', 'NAVI', 'M80', 'Astralis', '3DMAX', 'B8', 'FlyQuest', 'Liquid'],
-                datasets: [
-                    {
-                        label: '3-0',
-                        data: [49.56, 46.73, 16.60, 24.63, 20.90, 12.90, 7.62, 5.03],
-                        backgroundColor: 'rgba(255, 70, 85, 0.8)',
-                        borderColor: 'rgba(255, 70, 85, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: '3-1',
-                        data: [37.84, 35.25, 42.42, 35.73, 33.67, 27.59, 20.54, 16.53],
-                        backgroundColor: 'rgba(255, 167, 38, 0.8)',
-                        borderColor: 'rgba(255, 167, 38, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: '3-2',
-                        data: [10.11, 13.55, 28.07, 24.26, 24.48, 30.01, 31.70, 22.88],
-                        backgroundColor: 'rgba(0, 217, 255, 0.8)',
-                        borderColor: 'rgba(0, 217, 255, 1)',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            color: '#E8E8E8',
-                            font: {
-                                size: 14,
-                                family: "'Inter', sans-serif"
-                            },
-                            padding: 15
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(26, 31, 58, 0.95)',
-                        titleColor: '#E8E8E8',
-                        bodyColor: '#E8E8E8',
-                        borderColor: 'rgba(255, 70, 85, 0.5)',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + '%';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        stacked: true,
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#9E9E9E',
-                            font: {
-                                size: 12,
-                                family: "'Inter', sans-serif"
-                            }
-                        }
-                    },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)'
-                        },
-                        ticks: {
-                            color: '#9E9E9E',
-                            font: {
-                                size: 12,
-                                family: "'Inter', sans-serif"
-                            },
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Animate elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.method-card, .prediction-card, .swiss-step').forEach(el => {
-            observer.observe(el);
-        });
-    </script>
+        <footer>
+            Dados de times e modelo em tournament_data.py. Fonte de times/lineups: HLTV IEM Cologne Major 2026. Resultados gerados localmente com 10.000 simulações.
+        </footer>
+    </main>
 </body>
 </html>
