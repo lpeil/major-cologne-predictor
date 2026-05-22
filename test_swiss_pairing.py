@@ -22,25 +22,17 @@ def main():
         print(f"{i:>2}. {team:<20} (Strength: {strength:5.2f})")
     print()
 
-    # Define specific R1 winners based on user input
-    r1_results = {
-        "Astralis": "win",      # beat NiP
-        "NiP": "loss",
-        "3DMAX": "win",         # beat fnatic
-        "fnatic": "loss",
-        "Passion UA": "win",    # beat FaZe
-        "FaZe": "loss",
-        "PARIVISION": "loss",   # lost to TYLOO
-        "TYLOO": "win",
-        "NAVI": "win",          # beat FlyQuest
-        "FlyQuest": "loss",
-        "Aurora": "win",        # beat M80
-        "M80": "loss",
-        "MIBR": "win",          # beat Imperial
-        "Imperial": "loss",
-        "Liquid": "win",        # beat B8
-        "B8": "loss"
-    }
+    # Define deterministic R1 winners for the current dataset: best seed wins.
+    r1_results = {}
+    for team1, team2 in ROUND_1_MATCHUPS:
+        seed1 = INITIAL_SEEDING.index(team1)
+        seed2 = INITIAL_SEEDING.index(team2)
+        if seed1 < seed2:
+            r1_results[team1] = "win"
+            r1_results[team2] = "loss"
+        else:
+            r1_results[team1] = "loss"
+            r1_results[team2] = "win"
 
     print("ROUND 1 RESULTS (as specified):")
     print("-" * 100)
