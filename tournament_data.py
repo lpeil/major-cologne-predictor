@@ -9,6 +9,9 @@ Source snapshot:
 - HLTV IEM Cologne Major 2026 Stage 1 overview, checked on 2026-05-22.
 """
 
+from model_config import PREDICTION_WEIGHTS
+from official_data import OFFICIAL_SOURCES, STAGE1_OFFICIAL_RANKS, STAGE1_OFFICIAL_ROUND_1_MATCHUPS
+
 EVENT = {
     "name": "IEM Cologne Major 2026",
     "location": "Cologne, Germany",
@@ -16,7 +19,7 @@ EVENT = {
     "teams": 32,
     "start_date": "2026-06-02",
     "end_date": "2026-06-21",
-    "source_url": "https://www.hltv.org/major/cologne",
+    "source_url": OFFICIAL_SOURCES["event_hub"],
     "notes": (
         "32-team Major invited via Valve Regional Standings. Stage 1, Stage 2 "
         "and Stage 3 are Swiss stages; each feeds eight teams into the next."
@@ -24,52 +27,6 @@ EVENT = {
 }
 
 DEFAULT_STAGE = "stage1"
-
-UPSET_MULTIPLIERS = {
-    "very low": 1.00,
-    "low": 1.00,
-    "medium": 0.97,
-    "high": 0.93,
-    "very high": 0.90,
-}
-
-MOMENTUM_STAGE_SCORE = {
-    "excellent": 95,
-    "very good": 85,
-    "good": 75,
-    "moderate": 60,
-    "shaky": 45,
-    "poor": 30,
-}
-
-RECORD_SCORE = {
-    "3-0": 100,
-    "3-1": 80,
-    "3-2": 60,
-    "N/A": None,
-}
-
-PREDICTION_WEIGHTS = {
-    "stage1": {
-        "rank": 0.35,
-        "form": 0.30,
-        "stage_entry": 0.20,
-        "consistency": 0.15,
-    },
-    "stage2": {
-        "rank": 0.35,
-        "form": 0.30,
-        "stage_entry": 0.20,
-        "consistency": 0.15,
-    },
-    "stage3": {
-        "rank": 0.35,
-        "form": 0.30,
-        "stage_entry": 0.20,
-        "consistency": 0.15,
-    },
-}
-
 
 STAGES = {
     "stage1": {
@@ -81,16 +38,7 @@ STAGES = {
         "rank_label": "HLTV/VRS",
         "qualified_from": None,
         "qualifier_slots_to_next_stage": 8,
-        "round_1_matchups": [
-            ("GamerLegion", "NRG"),
-            ("B8", "TYLOO"),
-            ("HEROIC", "Sharks"),
-            ("BetBoom", "Gaimin Gladiators"),
-            ("BIG", "Liquid"),
-            ("M80", "Lynn Vision"),
-            ("MIBR", "THUNDER dOWNUNDER"),
-            ("SINNERS", "FlyQuest"),
-        ],
+        "round_1_matchups": STAGE1_OFFICIAL_ROUND_1_MATCHUPS,
         "teams": {
             "GamerLegion": {
                 "source": "Stage 1 invite",
@@ -549,3 +497,7 @@ def get_stage_matchups(stage_id=DEFAULT_STAGE):
     if len(stage["teams"]) >= 2:
         return build_seeded_round_1_matchups(stage_id)
     return []
+
+
+for team, ranks in STAGE1_OFFICIAL_RANKS.items():
+    STAGES["stage1"]["teams"][team].update(ranks)
