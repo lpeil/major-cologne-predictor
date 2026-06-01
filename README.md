@@ -39,7 +39,9 @@ Antes de atualizar previsões, edite os dados oficiais em `official_data.py`, aj
 
 - HLTV IEM Cologne Major 2026 event hub: https://www.hltv.org/major/cologne
 - HLTV Stage 1: https://www.hltv.org/events/9028/iem-cologne-major-2026-stage-1
+- HLTV Stage 1 preview: https://www.hltv.org/news/44735/iem-cologne-major-stage-1-teams-format-schedule-talent-fantasy
 - HLTV Round 1 matchups: https://www.hltv.org/news/44679/iem-cologne-major-stage-1-opening-matchups-announced
 - Valve Regional Standings Major cutoff: https://www.hltv.org/valve-ranking/teams/major
+- Valve Global Ranking atual: https://www.hltv.org/valve-ranking/teams/2026/june/1
 
-Snapshot consultado em 2026-05-22.
+Snapshot consultado em 2026-06-01.

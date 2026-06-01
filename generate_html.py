@@ -255,7 +255,7 @@ def generate_html(simulations=DEFAULT_SIMULATIONS, seed=DEFAULT_RANDOM_SEED):
                 <div class="summary-row"><span>Evento</span><strong>{escape(EVENT['name'])}</strong></div>
                 <div class="summary-row"><span>Stage</span><strong>{escape(STAGE['name'])} · 2 a 5 de junho</strong></div>
                 <div class="summary-row"><span>Formato</span><strong>16 times Swiss</strong></div>
-                <div class="summary-row"><span>Snapshot</span><strong>22 de maio de 2026</strong></div>
+                <div class="summary-row"><span>Snapshot</span><strong>1 de junho de 2026</strong></div>
             </div>
         </section>
         <section>

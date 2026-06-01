@@ -47,8 +47,9 @@ def main():
         assert 0 <= data["form_score"] <= 10
         assert 0 <= data["consistency"] <= 10
 
-    assert TEAMS_DATA["Liquid"]["hltv_rank"] == 25
-    assert TEAMS_DATA["Liquid"]["valve_rank"] == 36
+    assert TEAMS_DATA["Liquid"]["hltv_rank"] == 26
+    assert TEAMS_DATA["Liquid"]["valve_rank"] == 45
+    assert TEAMS_DATA["BetBoom"]["players"] == ["Boombl4", "zorte", "d1Ledez", "Magnojez", "FL4MUS"]
 
     print("Stage 1 data validation passed.")
 
